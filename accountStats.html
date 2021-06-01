@@ -7,24 +7,83 @@
             * > *{
                 flex: 1;
             }
-            .input {
+            .inputs {
               margin: auto;
-              width: 40%;
+              width: 43%;
               border: 3px solid #73AD21;
               padding: 10px;
             }
+
+            .button {
+                float: right;
+                font-size: 28px;
+                cursor: pointer;
+            }
+
+            header{
+                background-color:red;
+            }
         </style>
+
+        <header>
+            <h1 style="text-align:center">Account Stats</h1>
+        </header>
     </head>
 
     <body>
-        <!--maybe should be in header-->
-        <h1 style="text-align:center">Account Stats</h1>
 
-        <div class="input">
-            <label>Username:</label>
-            <input style="height:30px; font-weight: bold;"type="text" size=60">
-            <input type="button" value="Enter">
+        <!--html for inputs and button-->
+        <div style="border: 3px solid #73AD21; padding-bottom: 50px; padding-top: 20px;">
+            <div class="inputs">
+                <label>Github Username:</label>
+                <input style="height:30px; font-weight: bold;"type="text" size=60 id="githubInput">
+            </div>
+    
+            <br><br>
+    
+            <div class="inputs">
+                <label>Steam Username:</label>
+                <input style="height:30px; font-weight: bold;"type="text" size=60 id="steamInput">
+            </div>
+            
+            <br><br>
+    
+            <div class="inputs">
+                <label>Reddit Username:</label>
+                <input style="height:30px; font-weight: bold;"type="text" size=60 id="redditInput">
+            </div>
+
+            <br>
+
+            <div style="width: 72.3%;">
+                <input class="button" onclick="callGithubApi()" type="button" value="Enter">
+            </div>
+            
         </div>
-        
+        <!--html for inputs and buttonS-->
+
+        <br>
+
+        <!--output div-->
+        <div style="border: 3px solid #73AD21; padding-bottom: 50px; padding-top: 20px;">
+            <h1 style="text-align: center;">Output here?</h1>
+        </div>
+        <!--output div-->
+
+        <script>
+            function printGithubData() {
+                var responseObj = JSON.parse(this.responseText);
+                console.log(responseObj.login + " has " + responseObj.public_repos + " public repositories!");
+                console.log(responseObj.id);
+            }
+
+            function callGithubApi() {
+                console.log("Request Sent");
+                var request = new XMLHttpRequest();
+                request.onload = printGithubData;
+                request.open('get', 'https://api.github.com/users/' + document.getElementById("githubInput").value);
+                request.send();
+            }
+        </script>
     </body>
 </html>
