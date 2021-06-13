@@ -20,6 +20,12 @@
                 cursor: pointer;
             }
 
+            .outputs {
+                text-align: center;
+                font-weight: bold;
+                font-size: 30px;
+            }
+
             header{
                 background-color:red;
             }
@@ -56,7 +62,7 @@
             <br>
 
             <div style="width: 72.3%;">
-                <input class="button" onclick="callGithubApi()" type="button" value="Enter">
+                <input class="button" onclick="callGithubApi(), callRedditApi()" type="button" value="Enter" id="enterButton">
             </div>
             
         </div>
@@ -64,25 +70,66 @@
 
         <br>
 
-        <!--output div-->
-        <div style="border: 3px solid #73AD21; padding-bottom: 50px; padding-top: 20px;">
-            <h1 style="text-align: center;">Output here?</h1>
+        <!--output divs-->
+        <div id="githubOutput" class="outputs">
         </div>
-        <!--output div-->
+
+        <br><br>
+
+        <div id="steamOutput" class="outputs">
+        </div>
+
+        <br><br>
+
+        <div id="redditOutput" class="outputs">
+        </div>
+        <!--output divs-->
 
         <script>
+            var enterClick = document;
+            enterClick.addEventListener("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    document.getElementById("enterButton").click();
+                }
+            });
+
             function printGithubData() {
                 var responseObj = JSON.parse(this.responseText);
-                console.log(responseObj.login + " has " + responseObj.public_repos + " public repositories!");
-                console.log(responseObj.id);
+                if (responseObj.value != "undefined") {
+                    console.log("defined");
+                    let print = document.getElementById('githubOutput');
+                    print.innerHTML = responseObj.login + " Account Stats:" + "<br><br>"
+                    print.innerHTML += "Number of Public Repos: " + responseObj.public_repos + "<br>";
+                    print.innerHTML += "Account ID: " + responseObj.id + "<br>";
+                } else {
+                    console.log("undefined");
+                    print.innerHTML = "";
+                }
+            }
+
+            function printRedditData() {
+                var responseObj = JSON.parse(this.responseText);
+                let print = document.getElementById('redditOutput');
+                print.innerHTML = responseObj.display_name + " Account Stats:" + "<br><br>"
             }
 
             function callGithubApi() {
-                console.log("Request Sent");
-                var request = new XMLHttpRequest();
-                request.onload = printGithubData;
-                request.open('get', 'https://api.github.com/users/' + document.getElementById("githubInput").value);
-                request.send();
+                if (document.getElementById("githubInput").value.length != 0) {
+                    var request = new XMLHttpRequest();
+                    request.onload = printGithubData;
+                    request.open('get', 'https://api.github.com/users/' + document.getElementById("githubInput").value);
+                    request.send();
+                }
+            }
+
+            function callRedditApi() {
+                if (document.getElementById("githubInput").value.length != 0) {
+                    var request = new XMLHttpRequest();
+                    request.onload = printRedditData;
+                    request.open('get', 'https://www.reddit.com/user/' + document.getElementById("redditInput").value + "/about.json");
+                    request.send();
+                }
             }
         </script>
     </body>
