@@ -74,12 +74,8 @@
         <div id="githubOutput" class="outputs">
         </div>
 
-        <br><br>
-
         <div id="steamOutput" class="outputs">
         </div>
-
-        <br><br>
 
         <div id="redditOutput" class="outputs">
         </div>
@@ -87,6 +83,8 @@
 
         <script>
             var enterClick = document;
+            var githubRequest;
+            var redditRequest;
             enterClick.addEventListener("keyup", function(event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
@@ -96,39 +94,54 @@
 
             function printGithubData() {
                 var responseObj = JSON.parse(this.responseText);
-                if (responseObj.value != "undefined") {
-                    console.log("defined");
+                if (githubRequest.status == 404) {
                     let print = document.getElementById('githubOutput');
-                    print.innerHTML = responseObj.login + " Account Stats:" + "<br><br>"
-                    print.innerHTML += "Number of Public Repos: " + responseObj.public_repos + "<br>";
-                    print.innerHTML += "Account ID: " + responseObj.id + "<br>";
+                    print.innerHTML = "Invalid Github Username";
                 } else {
-                    console.log("undefined");
-                    print.innerHTML = "";
+                    let print = document.getElementById('githubOutput');
+                    print.innerHTML = responseObj.login + " Github Stats:" + "<br>"
+                    print.innerHTML += "Number of Public Repos: " + responseObj.public_repos + "<br>";
+                    if (responseObj.name != null) {
+                        print.innerHTML += "Name: " + responseObj.name + "<br>";
+                    } else {
+                        print.innerHTML += "Name: None Listed<br>";
+                    }
+                    if (responseObj.email != null) {
+                        print.innerHTML += "Email: " + responseObj.email + "<br><br><br>";
+                    } else {
+                        print.innerHTML += "Email: None Listed<br><br><br>";
+                    }
                 }
             }
 
             function printRedditData() {
                 var responseObj = JSON.parse(this.responseText);
-                let print = document.getElementById('redditOutput');
-                print.innerHTML = responseObj.display_name + " Account Stats:" + "<br><br>"
+                if (redditRequest.status == 404) {
+                    let print = document.getElementById('redditOutput');
+                    print.innerHTML = "Invalid Reddit Username";
+                } else {
+                    let print = document.getElementById('redditOutput');
+                    print.innerHTML = responseObj.data.name + " Reddit Stats:" + "<br>"
+                    print.innerHTML += "Total Karma: " + responseObj.data.total_karma + "<br>"
+                    print.innerHTML += "Subscribers: " + responseObj.data.subreddit.subscribers + "<br>"
+                }
             }
 
             function callGithubApi() {
                 if (document.getElementById("githubInput").value.length != 0) {
-                    var request = new XMLHttpRequest();
-                    request.onload = printGithubData;
-                    request.open('get', 'https://api.github.com/users/' + document.getElementById("githubInput").value);
-                    request.send();
+                    githubRequest = new XMLHttpRequest();
+                    githubRequest.onload = printGithubData;
+                    githubRequest.open('get', 'https://api.github.com/users/' + document.getElementById("githubInput").value);
+                    githubRequest.send();
                 }
             }
 
             function callRedditApi() {
-                if (document.getElementById("githubInput").value.length != 0) {
-                    var request = new XMLHttpRequest();
-                    request.onload = printRedditData;
-                    request.open('get', 'https://www.reddit.com/user/' + document.getElementById("redditInput").value + "/about.json");
-                    request.send();
+                if (document.getElementById("redditInput").value.length != 0) {
+                    redditRequest = new XMLHttpRequest();
+                    redditRequest.onload = printRedditData;
+                    redditRequest.open('get', 'https://www.reddit.com/user/' + document.getElementById("redditInput").value + "/about.json");
+                    redditRequest.send();
                 }
             }
         </script>
