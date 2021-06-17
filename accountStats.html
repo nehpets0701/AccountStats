@@ -3,14 +3,12 @@
 
 <html lang="en">
     <head>
+        <link rel="icon" href="https://i.imgur.com/iQ3gbKy.png">
         <style>
-            * > *{
-                flex: 1;
-            }
             .inputs {
               margin: auto;
               width: 43%;
-              border: 3px solid #73AD21;
+              border: 3px solid #000000;
               padding: 10px;
             }
 
@@ -26,6 +24,10 @@
                 font-size: 30px;
             }
 
+            .landingPage {
+                text-align: center;
+            }
+
             header{
                 background-color:red;
             }
@@ -39,30 +41,30 @@
     <body>
 
         <!--html for inputs and button-->
-        <div style="border: 3px solid #73AD21; padding-bottom: 50px; padding-top: 20px;">
+        <div style="border: 3px solid #000000; padding-bottom: 50px; padding-top: 20px;">
             <div class="inputs">
                 <label>Github Username:</label>
-                <input style="height:30px; font-weight: bold;"type="text" size=60 id="githubInput">
+                <input style="height:30px; font-weight: bold; width: 70%;"type="text" id="githubInput">
             </div>
     
             <br><br>
-    
+
             <div class="inputs">
-                <label>Steam Username:</label>
-                <input style="height:30px; font-weight: bold;"type="text" size=60 id="steamInput">
+                <label>Instagram Username:</label>
+                <input style="height:30px; font-weight: bold; width: 70%;"type="text" id="instagramInput">
             </div>
-            
+    
             <br><br>
     
             <div class="inputs">
                 <label>Reddit Username:</label>
-                <input style="height:30px; font-weight: bold;"type="text" size=60 id="redditInput">
+                <input style="height:30px; font-weight: bold; width: 70%;"type="text" id="redditInput">
             </div>
 
             <br>
 
             <div style="width: 72.3%;">
-                <input class="button" onclick="callGithubApi(), callRedditApi()" type="button" value="Enter" id="enterButton">
+                <input class="button" onclick="callGithubApi(), callRedditApi(), callInstagramApi()" type="button" value="Enter" id="enterButton">
             </div>
             
         </div>
@@ -74,17 +76,49 @@
         <div id="githubOutput" class="outputs">
         </div>
 
-        <div id="steamOutput" class="outputs">
+        <div id="instagramOutput" class="outputs">
         </div>
 
         <div id="redditOutput" class="outputs">
         </div>
         <!--output divs-->
 
+
+        <!--landing page-->
+        <div id="landingPage" class="landingPage">
+            <h2>
+                Account Stats, data from all your accounts.
+            </h2>
+            <div style="border: 3px solid #000000; float: right; width: 40%;">
+                <img style="float: left;" src="https://i.imgur.com/iQ3gbKy.png" alt="Image Unavailable">
+            </div>
+            <div style="border: 3px solid #000000; float: left; width: 50%;">
+                <p>
+                    Account Stats allows you to enter usernames and get information on all of your accounts.
+                    This includes information like the owner's name and email, and data such as account activity and followers.
+                    The site featues a very easy to use interface where you simply type the usernames you are interested in and press enter.
+                    You will immediately be greeted with the account stats. You can choose to use only one text box if you are only interested in one account,
+                    or you can fill all the text boxes and get data on multiple accounts at once.
+                    This was inspired from the fact that many websites exist that do this for only a single acccount at once.
+                    Account Stats allows you to use multiple accounts from multiple sites simultaneously.
+                </p>
+            </div>
+        </div>
+
+        <br><br><br><br><br><br><br><br><br><br>
+
+        <footer style="text-align: center;">
+            Github Repository: <a href="https://github.com/nehpets0701/AccountStats">https://github.com/nehpets0701/AccountStats</a></footer>
+        </footer>
+        <!--landing page-->
+
         <script>
             var enterClick = document;
+            
             var githubRequest;
             var redditRequest;
+            var instagramRequest;
+
             enterClick.addEventListener("keyup", function(event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
@@ -127,11 +161,25 @@
                 }
             }
 
+            function printInstagramData() {
+                var responseObj = JSON.parse(this.responseText);
+                if (instagramRequest.status == 404) {
+                    let print = document.getElementById('instagramOutput');
+                    print.innerHTML = "Invalid Instagram Username";
+                } else {
+                    let print = document.getElementById('instagramOutput');
+                    print.innerHTML = responseObj.data.name + " Instagram Stats:" + "<br>"
+                    print.innerHTML += "Number of Followers: " + responseObj.user.edge_follow + "<br>"
+                    print.innerHTML += "Number of Accountf Following: " + responseObj.user.edge_followed_by + "<br>"
+                }
+            }
+
             function callGithubApi() {
                 if (document.getElementById("githubInput").value.length != 0) {
                     githubRequest = new XMLHttpRequest();
                     githubRequest.onload = printGithubData;
-                    githubRequest.open('get', 'https://api.github.com/users/' + document.getElementById("githubInput").value);
+                    githubRequest.open('get', 'https://api.github.com/users/' + 
+                                        document.getElementById("githubInput").value);
                     githubRequest.send();
                 }
             }
@@ -141,6 +189,15 @@
                     redditRequest = new XMLHttpRequest();
                     redditRequest.onload = printRedditData;
                     redditRequest.open('get', 'https://www.reddit.com/user/' + document.getElementById("redditInput").value + "/about.json");
+                    redditRequest.send();
+                }
+            }
+
+            function callInstagramApi() {
+                if (document.getElementById("instagramInput").value.length != 0) {
+                    redditRequest = new XMLHttpRequest();
+                    redditRequest.onload = printRedditData;
+                    redditRequest.open('get', 'https://www.instagram.com/' + document.getElementById("instagramInput").value + "/?__a=1");
                     redditRequest.send();
                 }
             }
