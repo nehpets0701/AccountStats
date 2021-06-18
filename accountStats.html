@@ -20,8 +20,8 @@
 
             .outputs {
                 text-align: center;
-                font-weight: bold;
                 font-size: 30px;
+                font-family:Arial, Helvetica, sans-serif;
             }
 
             .landingPage {
@@ -50,8 +50,8 @@
             <br><br>
 
             <div class="inputs">
-                <label>Instagram Username:</label>
-                <input style="height:30px; font-weight: bold; width: 70%;"type="text" id="instagramInput">
+                <label>Youtube Channel:</label>
+                <input style="height:30px; font-weight: bold; width: 70%;"type="text" id="youtubeInput">
             </div>
     
             <br><br>
@@ -64,7 +64,7 @@
             <br>
 
             <div style="width: 72.3%;">
-                <input class="button" onclick="callGithubApi(), callRedditApi(), callInstagramApi()" type="button" value="Enter" id="enterButton">
+                <input class="button" onclick="callGithubApi(), callRedditApi(), callYoutubeApi()" type="button" value="Enter" id="enterButton">
             </div>
             
         </div>
@@ -76,13 +76,14 @@
         <div id="githubOutput" class="outputs">
         </div>
 
-        <div id="instagramOutput" class="outputs">
+        <div id="youtubeOutput" class="outputs">
         </div>
 
         <div id="redditOutput" class="outputs">
         </div>
         <!--output divs-->
 
+        <br><br>
 
         <!--landing page-->
         <div id="landingPage" class="landingPage">
@@ -91,6 +92,7 @@
             </h2>
             <div style="float: right; width: 40%;">
                 <img style="float: left;" src="https://i.imgur.com/iQ3gbKy.png" alt="Image Unavailable">
+                <br><br>
             </div>
             <div style="border: 3px solid #000000; float: left; width: 50%;">
                 <p>
@@ -105,10 +107,11 @@
             </div>
         </div>
 
-        <br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
         <footer style="text-align: center;">
             Github Repository: <a href="https://github.com/nehpets0701/AccountStats">https://github.com/nehpets0701/AccountStats</a></footer>
+            <br><br>
         </footer>
         <!--landing page-->
 
@@ -117,7 +120,7 @@
             
             var githubRequest;
             var redditRequest;
-            var instagramRequest;
+            var youtubeRequest;
 
             enterClick.addEventListener("keyup", function(event) {
                 if (event.keyCode === 13) {
@@ -130,10 +133,10 @@
                 var responseObj = JSON.parse(this.responseText);
                 if (githubRequest.status == 404) {
                     let print = document.getElementById('githubOutput');
-                    print.innerHTML = "Invalid Github Username";
+                    print.innerHTML = "<p style=\"font-weight: bold;\">" + "Invalid Github Username</p><br>";
                 } else {
                     let print = document.getElementById('githubOutput');
-                    print.innerHTML = responseObj.login + " Github Stats:" + "<br>"
+                    print.innerHTML = "<p style=\"font-weight: bold;\">" + responseObj.login + " Github Stats:" + "</p>"
                     print.innerHTML += "Number of Public Repos: " + responseObj.public_repos + "<br>";
                     if (responseObj.name != null) {
                         print.innerHTML += "Name: " + responseObj.name + "<br>";
@@ -141,10 +144,12 @@
                         print.innerHTML += "Name: None Listed<br>";
                     }
                     if (responseObj.email != null) {
-                        print.innerHTML += "Email: " + responseObj.email + "<br><br><br>";
+                        print.innerHTML += "Email: " + responseObj.email + "<br>";
                     } else {
-                        print.innerHTML += "Email: None Listed<br><br><br>";
+                        print.innerHTML += "Email: None Listed<br>";
                     }
+                    print.innerHTML += "Number of Followers: " + responseObj.followers + "<br>";
+                    print.innerHTML += "Number of Accounts Following: " + responseObj.following + "<br><br><br>";
                 }
             }
 
@@ -152,25 +157,27 @@
                 var responseObj = JSON.parse(this.responseText);
                 if (redditRequest.status == 404) {
                     let print = document.getElementById('redditOutput');
-                    print.innerHTML = "Invalid Reddit Username";
+                    print.innerHTML = "<p style=\"font-weight: bold;\">" + "Invalid Reddit Username</p><br>";
                 } else {
                     let print = document.getElementById('redditOutput');
-                    print.innerHTML = responseObj.data.name + " Reddit Stats:" + "<br>"
+                    print.innerHTML = "<p style=\"font-weight: bold;\">" + responseObj.data.name + " Reddit Stats:" + "</p>"
                     print.innerHTML += "Total Karma: " + responseObj.data.total_karma + "<br>"
                     print.innerHTML += "Subscribers: " + responseObj.data.subreddit.subscribers + "<br>"
+                    print.innerHTML += "Verified?: " + responseObj.data.verified + "<br>"
                 }
             }
 
-            function printInstagramData() {
+            function printYoutubeData() {
                 var responseObj = JSON.parse(this.responseText);
-                if (instagramRequest.status == 404) {
-                    let print = document.getElementById('instagramOutput');
-                    print.innerHTML = "Invalid Instagram Username";
+                if (youtubeRequest.status == 404) {
+                    let print = document.getElementById('youtubeOutput');
+                    print.innerHTML = "Invalid Youtube Channel";
                 } else {
-                    let print = document.getElementById('instagramOutput');
-                    print.innerHTML = responseObj.data.name + " Instagram Stats:" + "<br>"
-                    print.innerHTML += "Number of Followers: " + responseObj.user.edge_follow + "<br>"
-                    print.innerHTML += "Number of Accountf Following: " + responseObj.user.edge_followed_by + "<br>"
+                    let print = document.getElementById('youtubeOutput');
+                    print.innerHTML = "<p style=\"font-weight: bold;\">" + " Youtube Channel Stats:" + "</p>"
+                    print.innerHTML += "Number of Subscribers: " + responseObj.items.statistics + "<br>"
+                    print.innerHTML += "Number of Views: " + responseObj.items.statistics + "<br>"
+                    print.innerHTML += "Number of Videos: " + responseObj.items.statistics + "<br>"
                 }
             }
 
@@ -193,12 +200,13 @@
                 }
             }
 
-            function callInstagramApi() {
-                if (document.getElementById("instagramInput").value.length != 0) {
-                    redditRequest = new XMLHttpRequest();
-                    redditRequest.onload = printRedditData;
-                    redditRequest.open('get', 'https://www.instagram.com/' + document.getElementById("instagramInput").value + "/?__a=1");
-                    redditRequest.send();
+            function callYoutubeApi() {
+                if (document.getElementById("youtubeInput").value.length != 0) {
+                    youtubeRequest = new XMLHttpRequest();
+                    youtubeRequest.onload = printYoutubeData;
+                    //youtubeRequest.open('get', 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' + document.getElementById("youtubeInput").value + "&key=AIzaSyBdR6IQBVnmWw69mHAszS1ivzAcg7cJDQs");
+                    youtubeRequest.open('get', 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCa-ckhlKL98F8YXKQ-BALiw&key=AIzaSyBdR6IQBVnmWw69mHAszS1ivzAcg7cJDQs');
+                    youtubeRequest.send();
                 }
             }
         </script>
