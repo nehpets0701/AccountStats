@@ -10,3 +10,5 @@ This was entirely created by Stephen Schwartz (https://github.com/nehpets0701)
 No related projects at this time.
 # Licensing
 No licensing at this time.
+# Origin
+This was inspired from the fact that many websites exist that do this for only a single acccount at once. Account Stats allows you to use multiple accounts from multiple sites simultaneously.
