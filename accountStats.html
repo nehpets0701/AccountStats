@@ -204,7 +204,6 @@
                 if (document.getElementById("youtubeInput").value.length != 0) {
                     youtubeRequest = new XMLHttpRequest();
                     youtubeRequest.onload = printYoutubeData;
-                    //youtubeRequest.open('get', 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' + document.getElementById("youtubeInput").value + "&key=AIzaSyBdR6IQBVnmWw69mHAszS1ivzAcg7cJDQs");
                     youtubeRequest.open('get', 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCa-ckhlKL98F8YXKQ-BALiw&key=AIzaSyBdR6IQBVnmWw69mHAszS1ivzAcg7cJDQs');
                     youtubeRequest.send();
                 }
